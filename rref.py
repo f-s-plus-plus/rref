@@ -1,9 +1,12 @@
 def rref(matrix):
-    if((len(matrix) + 1) == len(matrix[0])):
+    #checks to see if the dimensions of the matrix is valid
+    if(len(matrix) + 1) == len(matrix[0]):
+
+        #takes care of the lower staircase
         row = 0
         while row < len(matrix):
             inc = 1
-            if (matrix[row][row] != 0 and (inc + row) < len(matrix)):
+            if matrix[row][row] != 0 and (inc + row) < len(matrix):
                 while (inc + row) < len(matrix):
                     column = row
                     multiplier = matrix[row + inc][column] / matrix[row][column]
@@ -14,32 +17,39 @@ def rref(matrix):
                     inc += 1
             row += 1
 
+        #takes care of the upper staircase
         row = len(matrix) - 1
-        column = len(matrix[0]) - 2
-        inc = 1
-        print(str(row) + " : " + str(column))
         while row > 0:
-            multiplier = matrix[row - inc][column] / matrix[row][column]
-            column = len(matrix[0]) - 1
-            if(row == column):
-                row -= 1
-                inc = 1
-            else:
-                column -= 1
-            matrix[row - inc][column] = matrix[row - inc][column] - multiplier * matrix[row][column]
+            inc = 1
+            while row - inc >= 0:
+                column = row
+                multiplier = matrix[row - inc][column] / matrix[row][column]
+                column = len(matrix[0]) - 1
+                while column >= row:
+                    matrix[row - inc][column] = matrix[row - inc][column] - multiplier * matrix[row][column]
+                    column -= 1
+                inc += 1
+            row -= 1
 
-
-
-        for row in matrix:
-            print(row)
+        #turns all the coefficients into 1s
+        while row < len(matrix):
+            multiplier = 1 / matrix[row][row]
+            column = 0
+            while column < len(matrix[row]):
+                matrix[row][column] = multiplier * matrix[row][column]
+                if matrix[row][column] == -0.0:
+                    matrix[row][column] = 0
+                column += 1
+            row += 1
+        return matrix
     else:
-        print("The dimensions are off!")
+        #returns null if the dimensions are invalid
+        return None
 
 
 matrix_pass = [
     [1, 2, 6, 4],
     [3, 2, 4, 5],
-    [1, 9, 2, 5]
+    [0, 9, 2, 5]
 ]
-
-rref(matrix_pass)
+print(rref(matrix_pass))
